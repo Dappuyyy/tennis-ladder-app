@@ -1325,6 +1325,10 @@
       }
     }
   </style>
+
+  <!-- Library Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 </head>
 
 <body>
@@ -1611,8 +1615,20 @@
     </div>
   </div>
 
-  <script>
-    "use strict";
+     <script>
+  "use strict";
+
+  console.log(
+    "Supabase tersedia:",
+    typeof window.supabase !== "undefined"
+  );
+
+  console.log(
+    "createClient tersedia:",
+    typeof window.supabase?.createClient === "function"
+  );
+
+  const APP = {
 
     const APP = {
       Store: {
