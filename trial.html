@@ -1,0 +1,4895 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1"
+  >
+
+  <title>Tennis Ladder League</title>
+
+  <meta name="theme-color" content="#080c14">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="color-scheme" content="dark">
+
+  <style>
+    :root {
+      --bg: #080c14;
+      --surface: #101827;
+      --surface-2: #151f31;
+      --surface-3: #080e19;
+      --border: #243147;
+      --border-soft: #1b2638;
+
+      --lime: #c8ff18;
+      --lime-dark: #a8d900;
+      --cyan: #35ccec;
+      --green: #43d69d;
+      --red: #ff7087;
+      --orange: #ff9d52;
+      --purple: #bc8cff;
+
+      --white: #f7f9fc;
+      --text: #dce4ef;
+      --muted: #96a4b8;
+      --faint: #607087;
+      --black: #030712;
+
+      --shadow:
+        0 18px 50px rgba(0, 0, 0, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--bg);
+      color-scheme: dark;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding-bottom: 56px;
+
+      background:
+        radial-gradient(
+          circle at 100% 0%,
+          rgba(200, 255, 24, 0.08),
+          transparent 320px
+        ),
+        radial-gradient(
+          circle at 0% 55%,
+          rgba(53, 204, 236, 0.05),
+          transparent 280px
+        ),
+        var(--bg);
+
+      color: var(--white);
+
+      font-family:
+        Inter,
+        Aptos,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+
+      font-size: 14px;
+      line-height: 1.5;
+
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+
+      transition:
+        transform 150ms ease,
+        background 150ms ease,
+        border-color 150ms ease;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .app {
+      width: min(100%, 500px);
+      margin: 0 auto;
+      padding: 20px 16px;
+    }
+
+    .section {
+      margin-top: 22px;
+    }
+
+    .glass {
+      border: 1px solid var(--border-soft);
+      background: rgba(16, 24, 39, 0.94);
+      box-shadow: var(--shadow);
+    }
+
+    /* =====================================================
+       STATUS SUPABASE
+    ====================================================== */
+
+    .library-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+
+      margin-top: 13px;
+      padding: 9px 11px;
+
+      border: 1px solid var(--border-soft);
+      border-radius: 11px;
+
+      background: var(--surface-3);
+
+      font-size: 8px;
+      font-weight: 750;
+    }
+
+    .library-status-left {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+
+      background: var(--orange);
+    }
+
+    .status-dot.success {
+      background: var(--green);
+    }
+
+    .status-dot.error {
+      background: var(--red);
+    }
+
+    #libraryStatusText {
+      color: var(--muted);
+    }
+
+    #libraryStatusValue {
+      color: var(--orange);
+    }
+
+    #libraryStatusValue.success {
+      color: var(--green);
+    }
+
+    #libraryStatusValue.error {
+      color: var(--red);
+    }
+
+    /* =====================================================
+       HEADER
+    ====================================================== */
+
+    .header {
+      position: relative;
+      overflow: hidden;
+      padding: 18px;
+
+      border: 1px solid var(--border);
+      border-radius: 24px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(200, 255, 24, 0.08),
+          transparent 45%
+        ),
+        var(--surface);
+
+      box-shadow: var(--shadow);
+    }
+
+    .header::after {
+      position: absolute;
+      right: -32px;
+      bottom: -52px;
+
+      width: 150px;
+      height: 150px;
+
+      border: 1px solid rgba(200, 255, 24, 0.12);
+      border-radius: 50%;
+
+      content: "";
+      pointer-events: none;
+    }
+
+    .brand {
+      position: relative;
+      z-index: 1;
+
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      place-items: center;
+
+      border: 1px solid rgba(200, 255, 24, 0.28);
+      border-radius: 14px;
+
+      background: rgba(200, 255, 24, 0.1);
+
+      font-size: 21px;
+    }
+
+    .brand h1 {
+      margin: 0;
+
+      color: var(--lime);
+
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 0.075em;
+      line-height: 1.15;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+
+      color: var(--muted);
+
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .export-button {
+      position: relative;
+      z-index: 1;
+
+      width: 100%;
+      margin-top: 16px;
+      padding: 12px;
+
+      border: 1px solid rgba(53, 204, 236, 0.32);
+      border-radius: 13px;
+
+      background: rgba(53, 204, 236, 0.08);
+      color: var(--cyan);
+
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.025em;
+    }
+
+    .export-button:hover {
+      background: rgba(53, 204, 236, 0.13);
+    }
+
+    /* =====================================================
+       SUMMARY
+    ====================================================== */
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .summary-card {
+      min-width: 0;
+      padding: 13px 8px;
+
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+
+      background: rgba(16, 24, 39, 0.9);
+
+      text-align: center;
+    }
+
+    .summary-label {
+      display: block;
+
+      color: var(--faint);
+
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .summary-value {
+      display: block;
+      overflow: hidden;
+
+      margin-top: 6px;
+
+      color: var(--white);
+
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1.15;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .summary-value.lime {
+      color: var(--lime);
+    }
+
+    .summary-value.cyan {
+      color: var(--cyan);
+    }
+
+    .summary-value.small {
+      font-size: 12px;
+    }
+
+    /* =====================================================
+       FORM MATCH
+    ====================================================== */
+
+    .form-card {
+      padding: 17px;
+      border-radius: 22px;
+    }
+
+    .section-heading,
+    .form-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .section-heading h2,
+    .form-heading h2 {
+      margin: 0;
+
+      color: var(--text);
+
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .section-heading p {
+      margin: 4px 0 0;
+
+      color: var(--faint);
+
+      font-size: 10px;
+    }
+
+    .mode-switch,
+    .view-switch {
+      display: flex;
+      padding: 3px;
+
+      border: 1px solid var(--border);
+      border-radius: 11px;
+
+      background: var(--surface-3);
+    }
+
+    .mode-button,
+    .view-button {
+      padding: 7px 12px;
+
+      border: 0;
+      border-radius: 8px;
+
+      background: transparent;
+      color: var(--muted);
+
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .mode-button.active,
+    .view-button.active {
+      background: var(--lime);
+      color: var(--black);
+    }
+
+    .field {
+      margin-top: 16px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .team-a-label {
+      color: var(--green);
+    }
+
+    .team-b-label {
+      color: var(--cyan);
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 12px;
+
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+
+      background: var(--surface-3);
+      color: var(--white);
+
+      font-size: 12px;
+    }
+
+    select + select {
+      margin-top: 8px;
+    }
+
+    select:focus,
+    input:focus {
+      border-color: var(--lime);
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+
+      margin-top: 17px;
+      padding-top: 16px;
+
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .score-grid label {
+      display: block;
+      margin-bottom: 6px;
+
+      color: var(--muted);
+
+      font-size: 9px;
+    }
+
+    .score-grid input {
+      color: var(--lime);
+
+      font-size: 22px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .primary-button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 13px;
+
+      border: 0;
+      border-radius: 13px;
+
+      background: var(--lime);
+      color: var(--black);
+
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.035em;
+    }
+
+    .primary-button:hover {
+      background: var(--lime-dark);
+    }
+
+    .text-button {
+      padding: 0;
+
+      border: 0;
+
+      background: transparent;
+      color: var(--lime);
+
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    /* =====================================================
+       LEADERBOARD
+    ====================================================== */
+
+    .leaderboard-toolbar {
+      margin-top: 12px;
+      padding: 10px;
+
+      border: 1px solid var(--border-soft);
+      border-radius: 15px;
+
+      background: rgba(16, 24, 39, 0.72);
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px 11px;
+      margin-top: 9px;
+
+      color: var(--faint);
+
+      font-size: 8px;
+      font-weight: 650;
+    }
+
+    .legend strong {
+      color: var(--muted);
+    }
+
+    .empty {
+      margin-top: 12px;
+      padding: 34px 16px;
+
+      border: 1px dashed var(--border);
+      border-radius: 18px;
+
+      color: var(--faint);
+
+      font-size: 10px;
+      text-align: center;
+    }
+
+    .table-shell {
+      overflow-x: auto;
+      overflow-y: hidden;
+
+      margin-top: 12px;
+
+      border: 1px solid var(--border);
+      border-radius: 18px;
+
+      background: rgba(16, 24, 39, 0.94);
+      box-shadow: var(--shadow);
+
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .compact-table {
+      width: 100%;
+      min-width: 430px;
+
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .compact-table thead {
+      background: var(--surface-3);
+    }
+
+    .compact-table th {
+      padding: 10px 4px;
+
+      color: var(--faint);
+
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.07em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .compact-table th.name-column {
+      padding-left: 8px;
+      text-align: left;
+    }
+
+    .compact-table td {
+      padding: 11px 4px;
+
+      border-top: 1px solid var(--border-soft);
+
+      color: var(--text);
+
+      font-size: 10px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .compact-table tbody tr {
+      cursor: pointer;
+
+      transition:
+        background 140ms ease;
+    }
+
+    .compact-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .compact-table tbody tr:first-child {
+      background: rgba(200, 255, 24, 0.045);
+    }
+
+    .position-pill {
+      display: inline-grid;
+      width: 27px;
+      height: 27px;
+      place-items: center;
+
+      border-radius: 9px;
+
+      background: #1b2738;
+      color: var(--muted);
+
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    tr.rank-one .position-pill {
+      background: var(--lime);
+      color: var(--black);
+    }
+
+    tr.rank-two .position-pill {
+      background: #d8e1ec;
+      color: var(--black);
+    }
+
+    tr.rank-three .position-pill {
+      background: #b85b13;
+      color: white;
+    }
+
+    .name-cell {
+      overflow: hidden;
+      padding-left: 8px !important;
+      text-align: left !important;
+    }
+
+    .compact-name {
+      display: block;
+      overflow: hidden;
+
+      color: var(--white);
+
+      font-size: 11px;
+      font-weight: 800;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .compact-form,
+    .form-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .mini-form {
+      display: inline-grid;
+      width: 15px;
+      height: 15px;
+      place-items: center;
+
+      border-radius: 5px;
+
+      font-size: 6px;
+      font-weight: 900;
+    }
+
+    .form-badge {
+      display: inline-grid;
+      width: 26px;
+      height: 26px;
+      place-items: center;
+
+      border: 1px solid;
+      border-radius: 8px;
+
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .form-w {
+      border-color: var(--lime) !important;
+      background: var(--lime) !important;
+      color: var(--black) !important;
+    }
+
+    .form-l {
+      border-color: rgba(255, 112, 135, 0.42) !important;
+      background: rgba(255, 112, 135, 0.14) !important;
+      color: #ffd1d9 !important;
+    }
+
+    .form-d {
+      border-color: rgba(53, 204, 236, 0.42) !important;
+      background: rgba(53, 204, 236, 0.13) !important;
+      color: #c8f4ff !important;
+    }
+
+    .points-cell {
+      color: var(--lime) !important;
+      font-weight: 900 !important;
+    }
+
+    .positive {
+      color: var(--green) !important;
+    }
+
+    .negative {
+      color: var(--red) !important;
+    }
+
+    .neutral {
+      color: var(--muted) !important;
+    }
+
+    /* =====================================================
+       DETAIL CARDS
+    ====================================================== */
+
+    .detailed-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .player-card {
+      padding: 16px;
+
+      border-radius: 21px;
+
+      cursor: pointer;
+    }
+
+    .player-card.rank-1 {
+      border-color: rgba(200, 255, 24, 0.48);
+      background: rgba(200, 255, 24, 0.042);
+    }
+
+    .player-card.rank-2 {
+      border-color: rgba(216, 225, 236, 0.34);
+    }
+
+    .player-card.rank-3 {
+      border-color: rgba(184, 91, 19, 0.58);
+    }
+
+    .player-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .identity {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .rank-box {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
+      place-items: center;
+
+      border-radius: 13px;
+
+      background: #1d293b;
+      color: var(--muted);
+
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .rank-1 .rank-box {
+      background: var(--lime);
+      color: var(--black);
+    }
+
+    .rank-2 .rank-box {
+      background: #d8e1ec;
+      color: var(--black);
+    }
+
+    .rank-3 .rank-box {
+      background: #b85b13;
+      color: white;
+    }
+
+    .player-name {
+      overflow: hidden;
+      margin: 0;
+
+      font-size: 15px;
+      font-weight: 850;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .player-record {
+      margin: 5px 0 0;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+    .player-points {
+      min-width: 70px;
+
+      color: var(--lime);
+
+      text-align: right;
+    }
+
+    .player-points strong {
+      display: block;
+
+      font-size: 25px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .player-points span {
+      display: block;
+      margin-top: 5px;
+
+      color: var(--faint);
+
+      font-size: 7px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .detail-performance {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .performance-box {
+      min-width: 0;
+      padding: 10px;
+
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+
+      background: var(--surface-3);
+    }
+
+    .performance-box span {
+      display: block;
+
+      color: var(--faint);
+
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .performance-box strong {
+      display: block;
+      margin-top: 6px;
+
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .game-summary {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 8px;
+
+      margin-top: 8px;
+      padding: 11px;
+
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+
+      background: var(--surface-3);
+    }
+
+    .game-side span {
+      display: block;
+
+      color: var(--faint);
+
+      font-size: 8px;
+      font-weight: 650;
+    }
+
+    .game-side strong {
+      display: block;
+      margin-top: 3px;
+
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .game-side.right {
+      text-align: right;
+    }
+
+    .game-divider {
+      color: var(--border);
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .player-bottom {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 13px;
+    }
+
+    .mini-label {
+      display: block;
+      margin-bottom: 6px;
+
+      color: var(--faint);
+
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .badge {
+      padding: 5px 7px;
+
+      border: 1px solid var(--border);
+      border-radius: 999px;
+
+      background: var(--surface-3);
+      color: var(--text);
+
+      font-size: 7px;
+      font-weight: 750;
+    }
+
+    /* =====================================================
+       HISTORY
+    ====================================================== */
+
+    .history-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .history-card {
+      padding: 14px;
+
+      border-radius: 18px;
+    }
+
+    .history-top,
+    .history-result {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .history-mode {
+      color: var(--lime);
+
+      font-size: 8px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .history-date {
+      margin-top: 4px;
+
+      color: var(--faint);
+
+      font-size: 8px;
+    }
+
+    .history-result {
+      margin-top: 13px;
+    }
+
+    .history-team {
+      width: 38%;
+
+      font-size: 10px;
+      font-weight: 800;
+
+      overflow-wrap: anywhere;
+    }
+
+    .history-team.right {
+      text-align: right;
+    }
+
+    .history-team.loser {
+      color: var(--faint);
+    }
+
+    .history-score {
+      color: var(--lime);
+
+      font-size: 20px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .history-caption {
+      display: block;
+      margin-top: 4px;
+
+      color: var(--faint);
+
+      font-size: 7px;
+      font-weight: 500;
+    }
+
+    .history-actions {
+      margin-top: 8px;
+
+      text-align: right;
+    }
+
+    .danger-button {
+      padding: 7px;
+
+      border: 0;
+
+      background: transparent;
+      color: rgba(255, 112, 135, 0.8);
+
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      margin-top: 22px;
+      padding-top: 16px;
+
+      border-top: 1px solid var(--border-soft);
+
+      color: var(--faint);
+
+      font-size: 9px;
+    }
+
+    /* =====================================================
+       MODAL
+    ====================================================== */
+
+    .modal {
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 16px;
+
+      background: rgba(0, 0, 0, 0.84);
+
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .modal-card {
+      width: min(100%, 420px);
+      max-height: 92vh;
+      overflow-y: auto;
+
+      padding: 20px;
+
+      border: 1px solid var(--border);
+      border-radius: 24px;
+
+      background: var(--black);
+      box-shadow: var(--shadow);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+
+      font-size: 17px;
+      font-weight: 850;
+    }
+
+    .modal-header p {
+      margin: 5px 0 0;
+
+      color: var(--muted);
+
+      font-size: 10px;
+    }
+
+    .close-button {
+      display: grid;
+      width: 35px;
+      height: 35px;
+      flex: 0 0 35px;
+      place-items: center;
+
+      border: 1px solid var(--border);
+      border-radius: 50%;
+
+      background: var(--surface);
+      color: var(--muted);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .modal-secondary,
+    .modal-primary {
+      flex: 1;
+      padding: 11px;
+
+      border-radius: 12px;
+
+      font-size: 10px;
+      font-weight: 850;
+    }
+
+    .modal-secondary {
+      border: 1px solid var(--border);
+
+      background: var(--surface);
+      color: var(--muted);
+    }
+
+    .modal-primary {
+      border: 0;
+
+      background: var(--lime);
+      color: var(--black);
+    }
+
+    .detail-hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+
+      margin-top: 17px;
+      padding: 16px;
+
+      border: 1px solid rgba(200, 255, 24, 0.28);
+      border-radius: 17px;
+
+      background: rgba(200, 255, 24, 0.045);
+    }
+
+    .detail-label {
+      color: var(--muted);
+
+      font-size: 7px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .detail-hero strong {
+      display: block;
+      margin-top: 5px;
+
+      color: var(--lime);
+
+      font-size: 30px;
+      font-weight: 900;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .detail-stat {
+      min-width: 0;
+      padding: 11px 6px;
+
+      border: 1px solid var(--border-soft);
+      border-radius: 13px;
+
+      background: var(--surface);
+
+      text-align: center;
+    }
+
+    .detail-stat span {
+      display: block;
+
+      color: var(--faint);
+
+      font-size: 7px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .detail-stat strong {
+      display: block;
+      margin-top: 6px;
+
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .detail-section {
+      margin-top: 10px;
+      padding: 14px;
+
+      border: 1px solid var(--border-soft);
+      border-radius: 16px;
+
+      background: var(--surface);
+    }
+
+    .detail-section h4 {
+      margin: 0 0 11px;
+
+      color: var(--muted);
+
+      font-size: 8px;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .detail-match {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+
+      padding: 10px 0;
+
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .detail-match:last-child {
+      border-bottom: 0;
+    }
+
+    .detail-match-text {
+      min-width: 0;
+    }
+
+    .detail-match-text strong {
+      display: block;
+      overflow: hidden;
+
+      font-size: 10px;
+      font-weight: 750;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .detail-match-text small {
+      display: block;
+      margin-top: 4px;
+
+      color: var(--faint);
+
+      font-size: 8px;
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 200;
+      left: 50%;
+      bottom: 24px;
+
+      max-width: 90vw;
+      padding: 11px 16px;
+
+      border-radius: 999px;
+
+      background: var(--white);
+      color: var(--black);
+
+      font-size: 10px;
+      font-weight: 900;
+      text-align: center;
+
+      box-shadow: var(--shadow);
+
+      transform: translateX(-50%);
+    }
+  </style>
+
+  <!-- Library Supabase yang benar -->
+  https://unpkg.com/@supabase/supabase-js@2script>
+</head>
+
+<body>
+  <main class="app">
+
+    <header class="header">
+      <div class="brand">
+        <div class="brand-mark">🎾</div>
+
+        <div>
+          <h1>TENNIS LADDER</h1>
+          <p>Single &amp; Double League System</p>
+        </div>
+      </div>
+
+      <button
+        id="btnExportStandings"
+        class="export-button"
+        type="button"
+      >
+        📊 EXPORT KLASEMEN KE CSV
+      </button>
+
+      <div class="library-status">
+        <div class="library-status-left">
+          <span
+            id="libraryStatusDot"
+            class="status-dot"
+          ></span>
+
+          <span id="libraryStatusText">
+            Library Supabase
+          </span>
+        </div>
+
+        <strong id="libraryStatusValue">
+          Memeriksa...
+        </strong>
+      </div>
+    </header>
+
+
+    <section class="section summary-grid">
+      <div class="summary-card">
+        <span class="summary-label">Pemain</span>
+
+        <strong
+          id="statPlayers"
+          class="summary-value lime"
+        >
+          0
+        </strong>
+      </div>
+
+      <div class="summary-card">
+        <span class="summary-label">Match</span>
+
+        <strong
+          id="statMatches"
+          class="summary-value cyan"
+        >
+          0
+        </strong>
+      </div>
+
+      <div class="summary-card">
+        <span class="summary-label">Pemimpin</span>
+
+        <strong
+          id="statLeader"
+          class="summary-value small"
+        >
+          -
+        </strong>
+      </div>
+    </section>
+
+
+    <section class="section glass form-card">
+      <div class="form-heading">
+        <h2>Input Pertandingan</h2>
+
+        <div class="mode-switch">
+          <button
+            id="btnSingle"
+            class="mode-button active"
+            type="button"
+          >
+            Single
+          </button>
+
+          <button
+            id="btnDouble"
+            class="mode-button"
+            type="button"
+          >
+            Double
+          </button>
+        </div>
+      </div>
+
+
+      <div class="field">
+        <label class="team-a-label">
+          Tim / Pemain A
+        </label>
+
+        <select id="selectPlayerA1"></select>
+
+        <select
+          id="selectPlayerA2"
+          class="hidden"
+        ></select>
+      </div>
+
+
+      <div class="field">
+        <label class="team-b-label">
+          Tim / Pemain B
+        </label>
+
+        <select id="selectPlayerB1"></select>
+
+        <select
+          id="selectPlayerB2"
+          class="hidden"
+        ></select>
+      </div>
+
+
+      <div class="score-grid">
+        <div>
+          <label for="inputScoreA">
+            Game Tim A
+          </label>
+
+          <input
+            id="inputScoreA"
+            type="number"
+            min="0"
+            step="1"
+            inputmode="numeric"
+            placeholder="0"
+          >
+        </div>
+
+        <div>
+          <label for="inputScoreB">
+            Game Tim B
+          </label>
+
+          <input
+            id="inputScoreB"
+            type="number"
+            min="0"
+            step="1"
+            inputmode="numeric"
+            placeholder="0"
+          >
+        </div>
+      </div>
+
+      <button
+        id="btnSaveMatch"
+        class="primary-button"
+        type="button"
+      >
+        SIMPAN HASIL PERTANDINGAN
+      </button>
+    </section>
+
+
+    <section class="section">
+      <div class="section-heading">
+        <div>
+          <h2>Klasemen Individu</h2>
+          <p>Tekan nama pemain untuk membuka statistik lengkap</p>
+        </div>
+
+        <button
+          id="btnOpenPlayerModal"
+          class="text-button"
+          type="button"
+        >
+          + Tambah Pemain
+        </button>
+      </div>
+
+
+      <div class="leaderboard-toolbar">
+        <div class="view-switch">
+          <button
+            id="btnCompactView"
+            class="view-button active"
+            type="button"
+          >
+            Klasemen Ringkas
+          </button>
+
+          <button
+            id="btnDetailView"
+            class="view-button"
+            type="button"
+          >
+            Kartu Detail
+          </button>
+        </div>
+
+        <div class="legend">
+          <span><strong>M</strong> Match</span>
+          <span><strong>W</strong> Menang</span>
+          <span><strong>L</strong> Kalah</span>
+          <span><strong>GD</strong> Game Diperoleh</span>
+          <span><strong>GK</strong> Game Kemasukan</span>
+          <span><strong>SG</strong> Selisih Game</span>
+          <span><strong>PTS</strong> Poin Liga</span>
+        </div>
+      </div>
+
+      <div id="leaderboardContainer"></div>
+    </section>
+
+
+    <section class="section">
+      <div class="section-heading">
+        <div>
+          <h2>Histori Pertandingan</h2>
+          <p>Riwayat tersimpan pada browser ini</p>
+        </div>
+
+        <button
+          id="btnExportHistory"
+          class="text-button"
+          type="button"
+        >
+          Export CSV
+        </button>
+      </div>
+
+      <div
+        id="historyContainer"
+        class="history-list"
+      ></div>
+
+      <div class="history-actions">
+        <button
+          id="btnClearHistory"
+          class="danger-button"
+          type="button"
+        >
+          Hapus Seluruh Histori
+        </button>
+      </div>
+    </section>
+
+
+    <footer>
+      <span>🔥 Streak · 🛡️ Upset · 🧹 Bagel</span>
+
+      <button
+        id="btnReset"
+        class="danger-button"
+        type="button"
+      >
+        Reset System
+      </button>
+    </footer>
+  </main>
+
+
+  <!-- MODAL TAMBAH PEMAIN -->
+
+  <div
+    id="playerModal"
+    class="modal hidden"
+  >
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3>Tambah Pemain</h3>
+
+          <p>
+            Masukkan nama pemain yang belum terdaftar.
+          </p>
+        </div>
+
+        <button
+          id="btnClosePlayerModal"
+          class="close-button"
+          type="button"
+        >
+          ✕
+        </button>
+      </div>
+
+      <input
+        id="newPlayerInput"
+        type="text"
+        maxlength="40"
+        autocomplete="off"
+        placeholder="Nama Pemain"
+        style="margin-top: 16px;"
+      >
+
+      <div class="modal-actions">
+        <button
+          id="btnCancelPlayer"
+          class="modal-secondary"
+          type="button"
+        >
+          Batal
+        </button>
+
+        <button
+          id="btnSavePlayer"
+          class="modal-primary"
+          type="button"
+        >
+          Simpan
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MODAL DETAIL PEMAIN -->
+
+  <div
+    id="detailModal"
+    class="modal hidden"
+  >
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <p
+            id="detailRank"
+            style="
+              margin: 0 0 4px;
+              color: var(--lime);
+              font-size: 8px;
+              font-weight: 900;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+            "
+          >
+            Peringkat
+          </p>
+
+          <h3 id="detailName">
+            Nama Pemain
+          </h3>
+        </div>
+
+        <button
+          id="btnCloseDetail"
+          class="close-button"
+          type="button"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+
+  <script>
+    "use strict";
+
+    /*
+      ========================================================
+      PEMERIKSAAN LIBRARY SUPABASE
+      ========================================================
+    */
+
+    const SUPABASE_LIBRARY_READY =
+      typeof window.supabase !== "undefined" &&
+      typeof window.supabase.createClient === "function";
+
+
+    /*
+      ========================================================
+      APLIKASI
+      ========================================================
+    */
+
+    const APP = {
+      Store: {
+        players: [],
+        history: [],
+        matchCount: 0,
+        currentMode: "single",
+        leaderboardView: "compact",
+
+        load() {
+          this.players =
+            APP.Utils.readArray(
+              "tl_players"
+            );
+
+          this.history =
+            APP.Utils.readArray(
+              "tl_match_history"
+            );
+
+          const count =
+            Number(
+              localStorage.getItem(
+                "tl_match_count"
+              )
+            );
+
+          this.matchCount =
+            Number.isFinite(count)
+              ? count
+              : this.history.length;
+
+          this.currentMode =
+            localStorage.getItem(
+              "tl_mode"
+            ) === "double"
+              ? "double"
+              : "single";
+
+          this.leaderboardView =
+            localStorage.getItem(
+              "tl_view"
+            ) === "detail"
+              ? "detail"
+              : "compact";
+
+          this.normalize();
+        },
+
+        normalize() {
+          this.players =
+            this.players
+              .filter(player => {
+                return (
+                  player &&
+                  typeof player.name === "string"
+                );
+              })
+              .map(player => {
+                return {
+                  id:
+                    player.id ||
+                    APP.Utils.createId("player"),
+
+                  name:
+                    player.name.trim(),
+
+                  played:
+                    Number(player.played) || 0,
+
+                  won:
+                    Number(player.won) || 0,
+
+                  lost:
+                    Number(player.lost) || 0,
+
+                  gamesWon:
+                    Number(player.gamesWon) || 0,
+
+                  gamesLost:
+                    Number(player.gamesLost) || 0,
+
+                  points:
+                    Number(player.points) || 0,
+
+                  streak:
+                    Number(player.streak) || 0,
+
+                  upsets:
+                    Number(player.upsets) || 0,
+
+                  bagels:
+                    Number(player.bagels) || 0
+                };
+              });
+
+          this.history =
+            this.history.filter(match => {
+              return (
+                match &&
+                match.id &&
+                Array.isArray(match.teamA) &&
+                Array.isArray(match.teamB)
+              );
+            });
+        },
+
+        save() {
+          localStorage.setItem(
+            "tl_players",
+            JSON.stringify(this.players)
+          );
+
+          localStorage.setItem(
+            "tl_match_history",
+            JSON.stringify(this.history)
+          );
+
+          localStorage.setItem(
+            "tl_match_count",
+            String(this.matchCount)
+          );
+
+          localStorage.setItem(
+            "tl_mode",
+            this.currentMode
+          );
+
+          localStorage.setItem(
+            "tl_view",
+            this.leaderboardView
+          );
+        }
+      },
+
+
+      Engine: {
+        addPlayer() {
+          const input =
+            document.getElementById(
+              "newPlayerInput"
+            );
+
+          const name =
+            input.value.trim();
+
+          if (!name) {
+            alert(
+              "Nama pemain tidak boleh kosong."
+            );
+
+            input.focus();
+            return;
+          }
+
+          const duplicate =
+            APP.Store.players.some(player => {
+              return (
+                player.name.toLowerCase() ===
+                name.toLowerCase()
+              );
+            });
+
+          if (duplicate) {
+            alert(
+              "Nama pemain sudah terdaftar."
+            );
+
+            input.focus();
+            return;
+          }
+
+          APP.Store.players.push({
+            id:
+              APP.Utils.createId(
+                "player"
+              ),
+
+            name: name,
+
+            played: 0,
+            won: 0,
+            lost: 0,
+
+            gamesWon: 0,
+            gamesLost: 0,
+
+            points: 0,
+            streak: 0,
+            upsets: 0,
+            bagels: 0
+          });
+
+          input.value = "";
+
+          APP.Store.save();
+          APP.UI.closePlayerModal();
+          APP.UI.render();
+
+          APP.UI.toast(
+            "Pemain berhasil ditambahkan."
+          );
+        },
+
+
+        recordMatch() {
+          const isDouble =
+            APP.Store.currentMode === "double";
+
+          const teamAIds = [
+            document.getElementById(
+              "selectPlayerA1"
+            ).value
+          ];
+
+          const teamBIds = [
+            document.getElementById(
+              "selectPlayerB1"
+            ).value
+          ];
+
+          if (isDouble) {
+            teamAIds.push(
+              document.getElementById(
+                "selectPlayerA2"
+              ).value
+            );
+
+            teamBIds.push(
+              document.getElementById(
+                "selectPlayerB2"
+              ).value
+            );
+          }
+
+          const selected = [
+            ...teamAIds,
+            ...teamBIds
+          ];
+
+          if (
+            selected.some(id => !id)
+          ) {
+            alert(
+              "Pilih semua pemain terlebih dahulu."
+            );
+
+            return;
+          }
+
+          if (
+            new Set(selected).size !==
+            selected.length
+          ) {
+            alert(
+              "Setiap posisi harus diisi pemain yang berbeda."
+            );
+
+            return;
+          }
+
+          const rawA =
+            document.getElementById(
+              "inputScoreA"
+            ).value;
+
+          const rawB =
+            document.getElementById(
+              "inputScoreB"
+            ).value;
+
+          if (
+            rawA === "" ||
+            rawB === ""
+          ) {
+            alert(
+              "Isi game Tim A dan Tim B."
+            );
+
+            return;
+          }
+
+          const scoreA =
+            Number(rawA);
+
+          const scoreB =
+            Number(rawB);
+
+          if (
+            !Number.isInteger(scoreA) ||
+            !Number.isInteger(scoreB) ||
+            scoreA < 0 ||
+            scoreB < 0
+          ) {
+            alert(
+              "Jumlah game harus berupa bilangan bulat 0 atau lebih."
+            );
+
+            return;
+          }
+
+          const findPlayer =
+            id => {
+              return (
+                APP.Store.players.find(
+                  player => {
+                    return (
+                      String(player.id) ===
+                      String(id)
+                    );
+                  }
+                )
+              );
+            };
+
+          const teamA =
+            teamAIds.map(findPlayer);
+
+          const teamB =
+            teamBIds.map(findPlayer);
+
+          if (
+            [
+              ...teamA,
+              ...teamB
+            ].some(player => !player)
+          ) {
+            alert(
+              "Data pemain berubah. Pilih ulang pemain."
+            );
+
+            APP.UI.renderSelects();
+            return;
+          }
+
+          const rankingBefore = [
+            ...APP.Store.players
+          ].sort(
+            APP.Utils.sortPlayers
+          );
+
+          const averageRank =
+            team => {
+              const total =
+                team.reduce(
+                  (
+                    sum,
+                    player
+                  ) => {
+                    const rank =
+                      rankingBefore.findIndex(
+                        ranked =>
+                          ranked.id ===
+                          player.id
+                      );
+
+                    return (
+                      sum +
+                      Math.max(rank, 0)
+                    );
+                  },
+                  0
+                );
+
+              return (
+                total /
+                team.length
+              );
+            };
+
+          const rankA =
+            averageRank(teamA);
+
+          const rankB =
+            averageRank(teamB);
+
+          let winner = "draw";
+
+          if (scoreA > scoreB) {
+            winner = "A";
+          } else if (
+            scoreB > scoreA
+          ) {
+            winner = "B";
+          }
+
+          const upset =
+            winner === "A"
+              ? rankA > rankB
+              : winner === "B"
+                ? rankB > rankA
+                : false;
+
+          const bagel =
+            winner === "A"
+              ? scoreB <= 1
+              : winner === "B"
+                ? scoreA <= 1
+                : false;
+
+          const awards = {
+            teamA: [],
+            teamB: []
+          };
+
+          const processTeam =
+            config => {
+              config.players.forEach(
+                player => {
+                  player.played += 1;
+
+                  player.gamesWon +=
+                    config.ownScore;
+
+                  player.gamesLost +=
+                    config.opponentScore;
+
+                  let gained =
+                    config.ownScore;
+
+                  const bonuses = [];
+
+                  if (
+                    winner === "draw"
+                  ) {
+                    player.streak = 0;
+                  } else if (
+                    config.isWinner
+                  ) {
+                    player.won += 1;
+                    player.streak += 1;
+
+                    gained += 3;
+                    bonuses.push(
+                      "Menang +3"
+                    );
+
+                    if (upset) {
+                      gained += 2;
+                      player.upsets += 1;
+
+                      bonuses.push(
+                        "Upset +2"
+                      );
+                    }
+
+                    if (bagel) {
+                      gained += 2;
+                      player.bagels += 1;
+
+                      bonuses.push(
+                        "Bagel +2"
+                      );
+                    }
+
+                    if (
+                      player.streak >= 2
+                    ) {
+                      gained += 1;
+
+                      bonuses.push(
+                        "Streak +1"
+                      );
+                    }
+                  } else {
+                    player.lost += 1;
+                    player.streak = 0;
+                  }
+
+                  player.points += gained;
+
+                  awards[
+                    config.side
+                  ].push({
+                    playerId:
+                      player.id,
+
+                    name:
+                      player.name,
+
+                    points:
+                      gained,
+
+                    basePoints:
+                      config.ownScore,
+
+                    bonuses:
+                      bonuses
+                  });
+                }
+              );
+            };
+
+          processTeam({
+            players: teamA,
+            side: "teamA",
+            ownScore: scoreA,
+            opponentScore: scoreB,
+            isWinner: winner === "A"
+          });
+
+          processTeam({
+            players: teamB,
+            side: "teamB",
+            ownScore: scoreB,
+            opponentScore: scoreA,
+            isWinner: winner === "B"
+          });
+
+          APP.Store.history.unshift({
+            id:
+              APP.Utils.createId(
+                "match"
+              ),
+
+            createdAt:
+              new Date()
+                .toISOString(),
+
+            mode:
+              APP.Store.currentMode,
+
+            teamA:
+              teamA.map(player => ({
+                id: player.id,
+                name: player.name
+              })),
+
+            teamB:
+              teamB.map(player => ({
+                id: player.id,
+                name: player.name
+              })),
+
+            scoreA: scoreA,
+            scoreB: scoreB,
+
+            winner: winner,
+            upset: upset,
+            bagel: bagel,
+
+            awards: awards
+          });
+
+          APP.Store.matchCount += 1;
+
+          document.getElementById(
+            "inputScoreA"
+          ).value = "";
+
+          document.getElementById(
+            "inputScoreB"
+          ).value = "";
+
+          APP.Store.save();
+          APP.UI.render();
+
+          APP.UI.toast(
+            "Hasil pertandingan berhasil disimpan."
+          );
+        },
+
+
+        clearHistory() {
+          if (
+            !APP.Store.history.length
+          ) {
+            APP.UI.toast(
+              "Histori masih kosong."
+            );
+
+            return;
+          }
+
+          const approved =
+            confirm(
+              "Hapus histori? Statistik klasemen tidak berubah."
+            );
+
+          if (!approved) {
+            return;
+          }
+
+          APP.Store.history = [];
+
+          APP.Store.save();
+          APP.UI.renderHistory();
+          APP.UI.renderLeaderboard();
+
+          APP.UI.toast(
+            "Histori berhasil dihapus."
+          );
+        },
+
+
+        resetAll() {
+          const approved =
+            confirm(
+              "Hapus semua pemain, klasemen, dan histori?"
+            );
+
+          if (!approved) {
+            return;
+          }
+
+          APP.Store.players = [];
+          APP.Store.history = [];
+          APP.Store.matchCount = 0;
+          APP.Store.currentMode =
+            "single";
+
+          APP.Store.leaderboardView =
+            "compact";
+
+          APP.Store.save();
+          APP.UI.render();
+
+          APP.UI.toast(
+            "Seluruh data berhasil dihapus."
+          );
+        }
+      },
+
+
+      Stats: {
+        draws(player) {
+          return Math.max(
+            player.played -
+              player.won -
+              player.lost,
+            0
+          );
+        },
+
+        winRate(player) {
+          return player.played
+            ? Math.round(
+                (
+                  player.won /
+                  player.played
+                ) * 100
+              )
+            : 0;
+        },
+
+        pointsPerMatch(player) {
+          return player.played
+            ? player.points /
+                player.played
+            : 0;
+        },
+
+        averageGamesWon(player) {
+          return player.played
+            ? player.gamesWon /
+                player.played
+            : 0;
+        },
+
+        averageGamesLost(player) {
+          return player.played
+            ? player.gamesLost /
+                player.played
+            : 0;
+        },
+
+        form(
+          playerId,
+          limit = 5
+        ) {
+          const results = [];
+
+          for (
+            const match of
+              APP.Store.history
+          ) {
+            const inA =
+              match.teamA.some(
+                player => {
+                  return (
+                    String(player.id) ===
+                    String(playerId)
+                  );
+                }
+              );
+
+            const inB =
+              match.teamB.some(
+                player => {
+                  return (
+                    String(player.id) ===
+                    String(playerId)
+                  );
+                }
+              );
+
+            if (!inA && !inB) {
+              continue;
+            }
+
+            let result = "D";
+
+            if (inA) {
+              result =
+                match.scoreA >
+                match.scoreB
+                  ? "W"
+                  : match.scoreA <
+                      match.scoreB
+                    ? "L"
+                    : "D";
+            } else {
+              result =
+                match.scoreB >
+                match.scoreA
+                  ? "W"
+                  : match.scoreB <
+                      match.scoreA
+                    ? "L"
+                    : "D";
+            }
+
+            results.push(result);
+
+            if (
+              results.length >=
+              limit
+            ) {
+              break;
+            }
+          }
+
+          return results;
+        },
+
+        matches(
+          playerId,
+          limit = 5
+        ) {
+          return (
+            APP.Store.history
+              .filter(match => {
+                const inA =
+                  match.teamA.some(
+                    player => {
+                      return (
+                        String(player.id) ===
+                        String(playerId)
+                      );
+                    }
+                  );
+
+                const inB =
+                  match.teamB.some(
+                    player => {
+                      return (
+                        String(player.id) ===
+                        String(playerId)
+                      );
+                    }
+                  );
+
+                return inA || inB;
+              })
+              .slice(0, limit)
+          );
+        },
+
+        result(
+          match,
+          playerId
+        ) {
+          const inA =
+            match.teamA.some(
+              player => {
+                return (
+                  String(player.id) ===
+                  String(playerId)
+                );
+              }
+            );
+
+          if (
+            match.scoreA ===
+            match.scoreB
+          ) {
+            return "D";
+          }
+
+          if (inA) {
+            return (
+              match.scoreA >
+              match.scoreB
+                ? "W"
+                : "L"
+            );
+          }
+
+          return (
+            match.scoreB >
+            match.scoreA
+              ? "W"
+              : "L"
+          );
+        }
+      },
+
+
+      UI: {
+        renderLibraryStatus() {
+          const dot =
+            document.getElementById(
+              "libraryStatusDot"
+            );
+
+          const value =
+            document.getElementById(
+              "libraryStatusValue"
+            );
+
+          if (
+            SUPABASE_LIBRARY_READY
+          ) {
+            dot.className =
+              "status-dot success";
+
+            value.className =
+              "success";
+
+            value.textContent =
+              "Aktif";
+
+            console.log(
+              "Supabase tersedia: true"
+            );
+
+            console.log(
+              "createClient tersedia: true"
+            );
+          } else {
+            dot.className =
+              "status-dot error";
+
+            value.className =
+              "error";
+
+            value.textContent =
+              "Gagal dimuat";
+
+            console.error(
+              "Library Supabase gagal dimuat."
+            );
+          }
+        },
+
+
+        setMode(mode) {
+          if (
+            mode !== "single" &&
+            mode !== "double"
+          ) {
+            return;
+          }
+
+          APP.Store.currentMode =
+            mode;
+
+          const single =
+            mode === "single";
+
+          document
+            .getElementById(
+              "btnSingle"
+            )
+            .classList.toggle(
+              "active",
+              single
+            );
+
+          document
+            .getElementById(
+              "btnDouble"
+            )
+            .classList.toggle(
+              "active",
+              !single
+            );
+
+          document
+            .getElementById(
+              "selectPlayerA2"
+            )
+            .classList.toggle(
+              "hidden",
+              single
+            );
+
+          document
+            .getElementById(
+              "selectPlayerB2"
+            )
+            .classList.toggle(
+              "hidden",
+              single
+            );
+
+          if (single) {
+            document.getElementById(
+              "selectPlayerA2"
+            ).value = "";
+
+            document.getElementById(
+              "selectPlayerB2"
+            ).value = "";
+          }
+
+          APP.Store.save();
+        },
+
+
+        setLeaderboardView(view) {
+          APP.Store.leaderboardView =
+            view === "detail"
+              ? "detail"
+              : "compact";
+
+          document
+            .getElementById(
+              "btnCompactView"
+            )
+            .classList.toggle(
+              "active",
+              APP.Store
+                .leaderboardView ===
+                "compact"
+            );
+
+          document
+            .getElementById(
+              "btnDetailView"
+            )
+            .classList.toggle(
+              "active",
+              APP.Store
+                .leaderboardView ===
+                "detail"
+            );
+
+          APP.Store.save();
+          APP.UI.renderLeaderboard();
+        },
+
+
+        openPlayerModal() {
+          document
+            .getElementById(
+              "playerModal"
+            )
+            .classList.remove(
+              "hidden"
+            );
+
+          document.body.style
+            .overflow = "hidden";
+
+          setTimeout(
+            () => {
+              document
+                .getElementById(
+                  "newPlayerInput"
+                )
+                .focus();
+            },
+            50
+          );
+        },
+
+
+        closePlayerModal() {
+          document
+            .getElementById(
+              "playerModal"
+            )
+            .classList.add(
+              "hidden"
+            );
+
+          document.body.style
+            .overflow = "";
+        },
+
+
+        closeDetail() {
+          document
+            .getElementById(
+              "detailModal"
+            )
+            .classList.add(
+              "hidden"
+            );
+
+          document.body.style
+            .overflow = "";
+        },
+
+
+        render() {
+          APP.Store.players.sort(
+            APP.Utils.sortPlayers
+          );
+
+          document.getElementById(
+            "statPlayers"
+          ).textContent =
+            APP.Store.players.length;
+
+          document.getElementById(
+            "statMatches"
+          ).textContent =
+            APP.Store.matchCount;
+
+          document.getElementById(
+            "statLeader"
+          ).textContent =
+            APP.Store.players.length
+              ? APP.Store.players[0]
+                  .name
+              : "-";
+
+          APP.UI.renderSelects();
+          APP.UI.renderLeaderboard();
+          APP.UI.renderHistory();
+
+          APP.UI.setMode(
+            APP.Store.currentMode
+          );
+
+          APP.UI.renderViewButtons();
+        },
+
+
+        renderViewButtons() {
+          document
+            .getElementById(
+              "btnCompactView"
+            )
+            .classList.toggle(
+              "active",
+              APP.Store
+                .leaderboardView ===
+                "compact"
+            );
+
+          document
+            .getElementById(
+              "btnDetailView"
+            )
+            .classList.toggle(
+              "active",
+              APP.Store
+                .leaderboardView ===
+                "detail"
+            );
+        },
+
+
+        renderSelects() {
+          const selectIds = [
+            "selectPlayerA1",
+            "selectPlayerA2",
+            "selectPlayerB1",
+            "selectPlayerB2"
+          ];
+
+          selectIds.forEach(
+            id => {
+              const select =
+                document.getElementById(
+                  id
+                );
+
+              const previous =
+                select.value;
+
+              const options =
+                APP.Store.players
+                  .map(player => {
+                    return (
+                      '<option value="' +
+                      APP.Utils.escape(
+                        player.id
+                      ) +
+                      '">' +
+                      APP.Utils.escape(
+                        player.name
+                      ) +
+                      "</option>"
+                    );
+                  })
+                  .join("");
+
+              select.innerHTML =
+                '<option value="">Pilih Pemain</option>' +
+                options;
+
+              const stillExists =
+                Array.from(
+                  select.options
+                ).some(option => {
+                  return (
+                    option.value ===
+                    previous
+                  );
+                });
+
+              if (stillExists) {
+                select.value =
+                  previous;
+              }
+            }
+          );
+        },
+
+
+        formHTML(
+          form,
+          compact = false
+        ) {
+          if (!form.length) {
+            return compact
+              ? `
+                <span
+                  style="
+                    color:#607087;
+                    font-size:7px;
+                  "
+                >
+                  -
+                </span>
+              `
+              : `
+                <span
+                  style="
+                    color:#607087;
+                    font-size:8px;
+                  "
+                >
+                  Belum ada histori
+                </span>
+              `;
+          }
+
+          const items =
+            form
+              .map(result => {
+                const className =
+                  result === "W"
+                    ? "form-w"
+                    : result === "L"
+                      ? "form-l"
+                      : "form-d";
+
+                if (compact) {
+                  return `
+                    <span
+                      class="
+                        mini-form
+                        ${className}
+                      "
+                    >
+                      ${result}
+                    </span>
+                  `;
+                }
+
+                return `
+                  <span
+                    class="
+                      form-badge
+                      ${className}
+                    "
+                  >
+                    ${result}
+                  </span>
+                `;
+              })
+              .join("");
+
+          return `
+            <div
+              class="${
+                compact
+                  ? "compact-form"
+                  : "form-list"
+              }"
+            >
+              ${items}
+            </div>
+          `;
+        },
+
+
+        renderLeaderboard() {
+          const container =
+            document.getElementById(
+              "leaderboardContainer"
+            );
+
+          if (
+            !APP.Store.players.length
+          ) {
+            container.innerHTML = `
+              <div class="empty">
+                Belum ada pemain.
+                Tekan "+ Tambah Pemain".
+              </div>
+            `;
+
+            return;
+          }
+
+          if (
+            APP.Store
+              .leaderboardView ===
+              "detail"
+          ) {
+            APP.UI
+              .renderDetailedLeaderboard();
+          } else {
+            APP.UI
+              .renderCompactLeaderboard();
+          }
+        },
+
+
+        renderCompactLeaderboard() {
+          const container =
+            document.getElementById(
+              "leaderboardContainer"
+            );
+
+          const rows =
+            APP.Store.players
+              .map(
+                (
+                  player,
+                  index
+                ) => {
+                  const diff =
+                    player.gamesWon -
+                    player.gamesLost;
+
+                  const diffClass =
+                    diff > 0
+                      ? "positive"
+                      : diff < 0
+                        ? "negative"
+                        : "neutral";
+
+                  const rankClass =
+                    index === 0
+                      ? "rank-one"
+                      : index === 1
+                        ? "rank-two"
+                        : index === 2
+                          ? "rank-three"
+                          : "";
+
+                  return `
+                    <tr
+                      class="${rankClass}"
+                      data-player-id="${
+                        APP.Utils.escape(
+                          player.id
+                        )
+                      }"
+                    >
+                      <td>
+                        <span
+                          class="position-pill"
+                        >
+                          ${index + 1}
+                        </span>
+                      </td>
+
+                      <td class="name-cell">
+                        <span
+                          class="compact-name"
+                        >
+                          ${APP.Utils.escape(
+                            player.name
+                          )}
+                        </span>
+
+                        ${APP.UI.formHTML(
+                          APP.Stats.form(
+                            player.id,
+                            3
+                          ),
+                          true
+                        )}
+                      </td>
+
+                      <td>
+                        ${player.played}
+                      </td>
+
+                      <td>
+                        ${player.won}
+                      </td>
+
+                      <td>
+                        ${player.lost}
+                      </td>
+
+                      <td>
+                        ${player.gamesWon}
+                      </td>
+
+                      <td>
+                        ${player.gamesLost}
+                      </td>
+
+                      <td class="${diffClass}">
+                        ${
+                          diff > 0
+                            ? "+"
+                            : ""
+                        }${diff}
+                      </td>
+
+                      <td class="points-cell">
+                        ${player.points}
+                      </td>
+                    </tr>
+                  `;
+                }
+              )
+              .join("");
+
+          container.innerHTML = `
+            <div class="table-shell">
+              <table class="compact-table">
+
+                <colgroup>
+                  <col style="width:34px;">
+                  <col>
+                  <col style="width:28px;">
+                  <col style="width:28px;">
+                  <col style="width:28px;">
+                  <col style="width:31px;">
+                  <col style="width:31px;">
+                  <col style="width:35px;">
+                  <col style="width:38px;">
+                </colgroup>
+
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th class="name-column">
+                      Pemain
+                    </th>
+                    <th>M</th>
+                    <th>W</th>
+                    <th>L</th>
+                    <th>GD</th>
+                    <th>GK</th>
+                    <th>SG</th>
+                    <th>PTS</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  ${rows}
+                </tbody>
+
+              </table>
+            </div>
+          `;
+        },
+
+
+        renderDetailedLeaderboard() {
+          const container =
+            document.getElementById(
+              "leaderboardContainer"
+            );
+
+          const cards =
+            APP.Store.players
+              .map(
+                (
+                  player,
+                  index
+                ) => {
+                  const diff =
+                    player.gamesWon -
+                    player.gamesLost;
+
+                  const diffClass =
+                    diff > 0
+                      ? "positive"
+                      : diff < 0
+                        ? "negative"
+                        : "neutral";
+
+                  const rankClass =
+                    index === 0
+                      ? "rank-1"
+                      : index === 1
+                        ? "rank-2"
+                        : index === 2
+                          ? "rank-3"
+                          : "";
+
+                  const badges = [];
+
+                  if (
+                    player.streak >= 2
+                  ) {
+                    badges.push(
+                      "🔥 " +
+                      player.streak +
+                      " Streak"
+                    );
+                  }
+
+                  if (
+                    player.upsets > 0
+                  ) {
+                    badges.push(
+                      "🛡️ " +
+                      player.upsets +
+                      " Upset"
+                    );
+                  }
+
+                  if (
+                    player.bagels > 0
+                  ) {
+                    badges.push(
+                      "🧹 " +
+                      player.bagels +
+                      " Bagel"
+                    );
+                  }
+
+                  const badgeHTML =
+                    badges.length
+                      ? badges
+                          .map(item => {
+                            return `
+                              <span class="badge">
+                                ${item}
+                              </span>
+                            `;
+                          })
+                          .join("")
+                      : `
+                        <span class="badge">
+                          Belum ada badge
+                        </span>
+                      `;
+
+                  return `
+                    <article
+                      class="
+                        glass
+                        player-card
+                        ${rankClass}
+                      "
+                      data-player-id="${
+                        APP.Utils.escape(
+                          player.id
+                        )
+                      }"
+                    >
+
+                      <div class="player-top">
+
+                        <div class="identity">
+
+                          <span class="rank-box">
+                            ${String(
+                              index + 1
+                            ).padStart(
+                              2,
+                              "0"
+                            )}
+                          </span>
+
+                          <div
+                            style="
+                              min-width:0;
+                            "
+                          >
+                            <h3 class="player-name">
+                              ${APP.Utils.escape(
+                                player.name
+                              )}
+                            </h3>
+
+                            <p class="player-record">
+                              ${player.won}
+                              Menang ·
+                              ${player.lost}
+                              Kalah · WR
+                              ${APP.Stats.winRate(
+                                player
+                              )}%
+                            </p>
+                          </div>
+
+                        </div>
+
+                        <div class="player-points">
+
+                          <strong>
+                            ${player.points}
+                          </strong>
+
+                          <span>
+                            Poin Liga
+                          </span>
+
+                        </div>
+
+                      </div>
+
+
+                      <div class="detail-performance">
+
+                        <div class="performance-box">
+                          <span>Match</span>
+                          <strong>
+                            ${player.played}
+                          </strong>
+                        </div>
+
+                        <div class="performance-box">
+                          <span>Win Rate</span>
+                          <strong>
+                            ${APP.Stats.winRate(
+                              player
+                            )}%
+                          </strong>
+                        </div>
+
+                        <div class="performance-box">
+                          <span>
+                            Selisih Game
+                          </span>
+
+                          <strong
+                            class="${diffClass}"
+                          >
+                            ${
+                              diff > 0
+                                ? "+"
+                                : ""
+                            }${diff}
+                          </strong>
+                        </div>
+
+                      </div>
+
+
+                      <div class="game-summary">
+
+                        <div class="game-side">
+                          <span>
+                            Game Diperoleh
+                          </span>
+
+                          <strong class="positive">
+                            ${player.gamesWon}
+                          </strong>
+                        </div>
+
+                        <span class="game-divider">
+                          VS
+                        </span>
+
+                        <div
+                          class="
+                            game-side
+                            right
+                          "
+                        >
+                          <span>
+                            Game Kemasukan
+                          </span>
+
+                          <strong class="negative">
+                            ${player.gamesLost}
+                          </strong>
+                        </div>
+
+                      </div>
+
+
+                      <div class="player-bottom">
+
+                        <div>
+                          <span class="mini-label">
+                            Form 5 Match Terakhir
+                          </span>
+
+                          ${APP.UI.formHTML(
+                            APP.Stats.form(
+                              player.id
+                            )
+                          )}
+                        </div>
+
+                        <div class="badges">
+                          ${badgeHTML}
+                        </div>
+
+                      </div>
+
+                    </article>
+                  `;
+                }
+              )
+              .join("");
+
+          container.innerHTML = `
+            <div class="detailed-list">
+              ${cards}
+            </div>
+          `;
+        },
+
+
+        renderHistory() {
+          const container =
+            document.getElementById(
+              "historyContainer"
+            );
+
+          if (
+            !APP.Store.history.length
+          ) {
+            container.innerHTML = `
+              <div class="empty">
+                Belum ada histori pertandingan.
+              </div>
+            `;
+
+            return;
+          }
+
+          container.innerHTML =
+            APP.Store.history
+              .map(match => {
+                const teamA =
+                  APP.Utils.teamName(
+                    match.teamA
+                  );
+
+                const teamB =
+                  APP.Utils.teamName(
+                    match.teamB
+                  );
+
+                const winnerA =
+                  Number(match.scoreA) >
+                  Number(match.scoreB);
+
+                const winnerB =
+                  Number(match.scoreB) >
+                  Number(match.scoreA);
+
+                const draw =
+                  Number(match.scoreA) ===
+                  Number(match.scoreB);
+
+                return `
+                  <article
+                    class="
+                      glass
+                      history-card
+                    "
+                  >
+
+                    <div class="history-top">
+
+                      <div>
+                        <div class="history-mode">
+                          ${APP.Utils.escape(
+                            match.mode
+                          )}
+                          Match
+                        </div>
+
+                        <div class="history-date">
+                          ${APP.Utils.dateTime(
+                            match.createdAt
+                          )}
+                        </div>
+                      </div>
+
+                      <div class="badges">
+
+                        ${
+                          match.upset
+                            ? `
+                              <span class="badge">
+                                🛡️ Upset
+                              </span>
+                            `
+                            : ""
+                        }
+
+                        ${
+                          match.bagel
+                            ? `
+                              <span class="badge">
+                                🧹 Bagel
+                              </span>
+                            `
+                            : ""
+                        }
+
+                      </div>
+
+                    </div>
+
+
+                    <div class="history-result">
+
+                      <div
+                        class="
+                          history-team
+                          ${
+                            winnerA ||
+                            draw
+                              ? ""
+                              : "loser"
+                          }
+                        "
+                      >
+                        ${APP.Utils.escape(
+                          teamA
+                        )}
+
+                        <span class="history-caption">
+                          ${match.scoreA}
+                          game diperoleh
+                        </span>
+                      </div>
+
+                      <div class="history-score">
+                        ${match.scoreA}
+                        –
+                        ${match.scoreB}
+                      </div>
+
+                      <div
+                        class="
+                          history-team
+                          right
+                          ${
+                            winnerB ||
+                            draw
+                              ? ""
+                              : "loser"
+                          }
+                        "
+                      >
+                        ${APP.Utils.escape(
+                          teamB
+                        )}
+
+                        <span class="history-caption">
+                          ${match.scoreB}
+                          game diperoleh
+                        </span>
+                      </div>
+
+                    </div>
+
+                  </article>
+                `;
+              })
+              .join("");
+        },
+
+
+        showPlayerDetail(playerId) {
+          const players = [
+            ...APP.Store.players
+          ].sort(
+            APP.Utils.sortPlayers
+          );
+
+          const player =
+            players.find(item => {
+              return (
+                String(item.id) ===
+                String(playerId)
+              );
+            });
+
+          if (!player) {
+            return;
+          }
+
+          const rank =
+            players.findIndex(
+              item =>
+                item.id ===
+                player.id
+            ) + 1;
+
+          const diff =
+            player.gamesWon -
+            player.gamesLost;
+
+          const form =
+            APP.Stats.form(
+              player.id
+            );
+
+          const matches =
+            APP.Stats.matches(
+              player.id
+            );
+
+          document.getElementById(
+            "detailRank"
+          ).textContent =
+            "Peringkat #" +
+            rank;
+
+          document.getElementById(
+            "detailName"
+          ).textContent =
+            player.name;
+
+          const matchesHTML =
+            matches.length
+              ? matches
+                  .map(match => {
+                    const result =
+                      APP.Stats.result(
+                        match,
+                        player.id
+                      );
+
+                    const resultClass =
+                      result === "W"
+                        ? "form-w"
+                        : result === "L"
+                          ? "form-l"
+                          : "form-d";
+
+                    return `
+                      <div class="detail-match">
+
+                        <span
+                          class="
+                            form-badge
+                            ${resultClass}
+                          "
+                        >
+                          ${result}
+                        </span>
+
+                        <div class="detail-match-text">
+
+                          <strong>
+                            ${APP.Utils.escape(
+                              APP.Utils.teamName(
+                                match.teamA
+                              )
+                            )}
+                            ${match.scoreA}
+                            –
+                            ${match.scoreB}
+                            ${APP.Utils.escape(
+                              APP.Utils.teamName(
+                                match.teamB
+                              )
+                            )}
+                          </strong>
+
+                          <small>
+                            ${APP.Utils.dateTime(
+                              match.createdAt
+                            )}
+                            ·
+                            ${String(
+                              match.mode
+                            ).toUpperCase()}
+                          </small>
+
+                        </div>
+
+                      </div>
+                    `;
+                  })
+                  .join("")
+              : `
+                <div
+                  class="empty"
+                  style="margin-top:0;"
+                >
+                  Belum ada histori pemain.
+                </div>
+              `;
+
+          document.getElementById(
+            "detailContent"
+          ).innerHTML = `
+
+            <div class="detail-hero">
+
+              <div>
+                <span class="detail-label">
+                  Total Poin Liga
+                </span>
+
+                <strong>
+                  ${player.points}
+                </strong>
+              </div>
+
+              <div style="text-align:right;">
+                <span class="detail-label">
+                  Win Rate
+                </span>
+
+                <strong
+                  style="
+                    color:#f7f9fc;
+                    font-size:22px;
+                  "
+                >
+                  ${APP.Stats.winRate(
+                    player
+                  )}%
+                </strong>
+              </div>
+
+            </div>
+
+
+            <div class="detail-grid">
+
+              ${APP.UI.detailStat(
+                "Match",
+                player.played
+              )}
+
+              ${APP.UI.detailStat(
+                "Menang",
+                player.won,
+                "positive"
+              )}
+
+              ${APP.UI.detailStat(
+                "Kalah",
+                player.lost,
+                "negative"
+              )}
+
+            </div>
+
+
+            <div class="detail-section">
+
+              <h4>
+                Perolehan dan Kemasukan Game
+              </h4>
+
+              <div class="game-summary">
+
+                <div class="game-side">
+                  <span>
+                    Game Diperoleh
+                  </span>
+
+                  <strong class="positive">
+                    ${player.gamesWon}
+                  </strong>
+                </div>
+
+                <span class="game-divider">
+                  VS
+                </span>
+
+                <div
+                  class="
+                    game-side
+                    right
+                  "
+                >
+                  <span>
+                    Game Kemasukan
+                  </span>
+
+                  <strong class="negative">
+                    ${player.gamesLost}
+                  </strong>
+                </div>
+
+              </div>
+
+              <div class="detail-grid">
+
+                ${APP.UI.detailStat(
+                  "Selisih Game",
+                  (
+                    diff > 0
+                      ? "+"
+                      : ""
+                  ) + diff,
+                  diff > 0
+                    ? "positive"
+                    : diff < 0
+                      ? "negative"
+                      : "neutral"
+                )}
+
+                ${APP.UI.detailStat(
+                  "GD / Match",
+                  APP.Stats
+                    .averageGamesWon(
+                      player
+                    )
+                    .toFixed(1)
+                )}
+
+                ${APP.UI.detailStat(
+                  "GK / Match",
+                  APP.Stats
+                    .averageGamesLost(
+                      player
+                    )
+                    .toFixed(1)
+                )}
+
+              </div>
+
+            </div>
+
+
+            <div class="detail-section">
+              <h4>
+                Form 5 Match Terakhir
+              </h4>
+
+              ${APP.UI.formHTML(
+                form
+              )}
+            </div>
+
+
+            <div class="detail-grid">
+
+              ${APP.UI.detailStat(
+                "🔥 Streak",
+                player.streak
+              )}
+
+              ${APP.UI.detailStat(
+                "🛡️ Upset",
+                player.upsets
+              )}
+
+              ${APP.UI.detailStat(
+                "🧹 Bagel",
+                player.bagels
+              )}
+
+            </div>
+
+
+            <div class="detail-section">
+
+              <h4>
+                Efisiensi Poin
+              </h4>
+
+              <div class="detail-grid">
+
+                ${APP.UI.detailStat(
+                  "Poin / Match",
+                  APP.Stats
+                    .pointsPerMatch(
+                      player
+                    )
+                    .toFixed(1)
+                )}
+
+                ${APP.UI.detailStat(
+                  "Seri",
+                  APP.Stats.draws(
+                    player
+                  )
+                )}
+
+                ${APP.UI.detailStat(
+                  "Poin Liga",
+                  player.points
+                )}
+
+              </div>
+
+            </div>
+
+
+            <div class="detail-section">
+              <h4>
+                Lima Pertandingan Terakhir
+              </h4>
+
+              ${matchesHTML}
+            </div>
+          `;
+
+          document
+            .getElementById(
+              "detailModal"
+            )
+            .classList.remove(
+              "hidden"
+            );
+
+          document.body.style
+            .overflow = "hidden";
+        },
+
+
+        detailStat(
+          label,
+          value,
+          className = ""
+        ) {
+          return `
+            <div class="detail-stat">
+
+              <span>
+                ${APP.Utils.escape(
+                  label
+                )}
+              </span>
+
+              <strong class="${className}">
+                ${APP.Utils.escape(
+                  value
+                )}
+              </strong>
+
+            </div>
+          `;
+        },
+
+
+        toast(message) {
+          const old =
+            document.getElementById(
+              "appToast"
+            );
+
+          if (old) {
+            old.remove();
+          }
+
+          const toast =
+            document.createElement(
+              "div"
+            );
+
+          toast.id = "appToast";
+          toast.className = "toast";
+          toast.textContent = message;
+
+          document.body.appendChild(
+            toast
+          );
+
+          setTimeout(
+            () => {
+              toast.remove();
+            },
+            2000
+          );
+        }
+      },
+
+
+      Export: {
+        standings() {
+          if (
+            !APP.Store.players.length
+          ) {
+            alert(
+              "Belum ada data klasemen."
+            );
+
+            return;
+          }
+
+          const rows = [[
+            "Peringkat",
+            "Nama Pemain",
+            "Match",
+            "Menang",
+            "Kalah",
+            "Seri",
+            "Win Rate (%)",
+            "Game Diperoleh",
+            "Game Kemasukan",
+            "Selisih Game",
+            "Poin Liga",
+            "Poin per Match",
+            "Rata-rata Game Diperoleh",
+            "Rata-rata Game Kemasukan",
+            "Streak Aktif",
+            "Jumlah Upset",
+            "Jumlah Bagel",
+            "Form 5 Match Terakhir"
+          ]];
+
+          [
+            ...APP.Store.players
+          ]
+            .sort(
+              APP.Utils.sortPlayers
+            )
+            .forEach(
+              (
+                player,
+                index
+              ) => {
+                rows.push([
+                  index + 1,
+                  player.name,
+                  player.played,
+                  player.won,
+                  player.lost,
+
+                  APP.Stats.draws(
+                    player
+                  ),
+
+                  APP.Stats.winRate(
+                    player
+                  ),
+
+                  player.gamesWon,
+                  player.gamesLost,
+
+                  player.gamesWon -
+                    player.gamesLost,
+
+                  player.points,
+
+                  APP.Stats
+                    .pointsPerMatch(
+                      player
+                    )
+                    .toFixed(2),
+
+                  APP.Stats
+                    .averageGamesWon(
+                      player
+                    )
+                    .toFixed(2),
+
+                  APP.Stats
+                    .averageGamesLost(
+                      player
+                    )
+                    .toFixed(2),
+
+                  player.streak,
+                  player.upsets,
+                  player.bagels,
+
+                  APP.Stats
+                    .form(player.id)
+                    .join("-") ||
+                    "-"
+                ]);
+              }
+            );
+
+          APP.Export.download(
+            rows,
+
+            "tennis-ladder-klasemen-" +
+              APP.Utils.fileDate(
+                new Date()
+              ) +
+              ".csv"
+          );
+        },
+
+
+        history() {
+          if (
+            !APP.Store.history.length
+          ) {
+            alert(
+              "Belum ada histori pertandingan."
+            );
+
+            return;
+          }
+
+          const rows = [[
+            "Tanggal",
+            "Waktu",
+            "Mode",
+            "Tim A",
+            "Game Tim A",
+            "Game Tim B",
+            "Tim B",
+            "Pemenang",
+            "Poin Tim A",
+            "Poin Tim B",
+            "Bonus Tim A",
+            "Bonus Tim B",
+            "Upset",
+            "Bagel"
+          ]];
+
+          APP.Store.history.forEach(
+            match => {
+              const teamA =
+                APP.Utils.teamName(
+                  match.teamA
+                );
+
+              const teamB =
+                APP.Utils.teamName(
+                  match.teamB
+                );
+
+              const winner =
+                match.winner === "A"
+                  ? teamA
+                  : match.winner === "B"
+                    ? teamB
+                    : "Seri";
+
+              rows.push([
+                APP.Utils.csvDate(
+                  match.createdAt
+                ),
+
+                APP.Utils.csvTime(
+                  match.createdAt
+                ),
+
+                String(
+                  match.mode
+                ).toUpperCase(),
+
+                teamA,
+                match.scoreA,
+                match.scoreB,
+                teamB,
+                winner,
+
+                APP.Utils.awardPoints(
+                  match.awards,
+                  "teamA"
+                ),
+
+                APP.Utils.awardPoints(
+                  match.awards,
+                  "teamB"
+                ),
+
+                APP.Utils.awardBonuses(
+                  match.awards,
+                  "teamA"
+                ),
+
+                APP.Utils.awardBonuses(
+                  match.awards,
+                  "teamB"
+                ),
+
+                match.upset
+                  ? "Ya"
+                  : "Tidak",
+
+                match.bagel
+                  ? "Ya"
+                  : "Tidak"
+              ]);
+            }
+          );
+
+          APP.Export.download(
+            rows,
+
+            "tennis-ladder-histori-" +
+              APP.Utils.fileDate(
+                new Date()
+              ) +
+              ".csv"
+          );
+        },
+
+
+        download(
+          rows,
+          filename
+        ) {
+          const csv =
+            rows
+              .map(row => {
+                return (
+                  row
+                    .map(value => {
+                      const clean =
+                        String(
+                          value ?? ""
+                        ).replace(
+                          /"/g,
+                          '""'
+                        );
+
+                      return (
+                        '"' +
+                        clean +
+                        '"'
+                      );
+                    })
+                    .join(";")
+                );
+              })
+              .join("\r\n");
+
+          const blob =
+            new Blob(
+              [
+                "\uFEFF" +
+                csv
+              ],
+              {
+                type:
+                  "text/csv;charset=utf-8;"
+              }
+            );
+
+          const url =
+            URL.createObjectURL(
+              blob
+            );
+
+          const link =
+            document.createElement(
+              "a"
+            );
+
+          link.href = url;
+          link.download = filename;
+          link.style.display =
+            "none";
+
+          document.body.appendChild(
+            link
+          );
+
+          link.click();
+          link.remove();
+
+          setTimeout(
+            () => {
+              URL.revokeObjectURL(
+                url
+              );
+            },
+            1000
+          );
+
+          APP.UI.toast(
+            "CSV berhasil diunduh."
+          );
+        }
+      },
+
+
+      Utils: {
+        readArray(key) {
+          try {
+            const data =
+              JSON.parse(
+                localStorage.getItem(
+                  key
+                )
+              );
+
+            return Array.isArray(
+              data
+            )
+              ? data
+              : [];
+          } catch (error) {
+            return [];
+          }
+        },
+
+
+        createId(prefix) {
+          return (
+            prefix +
+            "-" +
+            Date.now() +
+            "-" +
+            Math.random()
+              .toString(36)
+              .slice(2, 9)
+          );
+        },
+
+
+        sortPlayers(a, b) {
+          const diffA =
+            a.gamesWon -
+            a.gamesLost;
+
+          const diffB =
+            b.gamesWon -
+            b.gamesLost;
+
+          return (
+            b.points -
+              a.points ||
+
+            diffB -
+              diffA ||
+
+            b.gamesWon -
+              a.gamesWon ||
+
+            a.name.localeCompare(
+              b.name,
+              "id"
+            )
+          );
+        },
+
+
+        teamName(team) {
+          if (
+            !Array.isArray(team)
+          ) {
+            return "Tim";
+          }
+
+          return (
+            team
+              .map(player => {
+                return (
+                  player &&
+                  player.name
+                    ? player.name
+                    : "Pemain"
+                );
+              })
+              .join(" / ")
+          );
+        },
+
+
+        awardItems(
+          awards,
+          side
+        ) {
+          if (
+            !awards ||
+            !Array.isArray(
+              awards[side]
+            )
+          ) {
+            return [];
+          }
+
+          return awards[side];
+        },
+
+
+        awardPoints(
+          awards,
+          side
+        ) {
+          const items =
+            APP.Utils.awardItems(
+              awards,
+              side
+            );
+
+          if (!items.length) {
+            return "-";
+          }
+
+          return (
+            items
+              .map(item => {
+                return (
+                  item.name +
+                  " +" +
+                  (
+                    Number(
+                      item.points
+                    ) || 0
+                  )
+                );
+              })
+              .join(" · ")
+          );
+        },
+
+
+        awardBonuses(
+          awards,
+          side
+        ) {
+          const items =
+            APP.Utils.awardItems(
+              awards,
+              side
+            );
+
+          if (!items.length) {
+            return "-";
+          }
+
+          return (
+            items
+              .map(item => {
+                const bonus =
+                  Array.isArray(
+                    item.bonuses
+                  )
+                    ? item.bonuses
+                        .join(", ")
+                    : "";
+
+                return (
+                  item.name +
+                  ": " +
+                  (
+                    bonus ||
+                    "Tanpa bonus"
+                  )
+                );
+              })
+              .join(" · ")
+          );
+        },
+
+
+        dateTime(value) {
+          const date =
+            new Date(value);
+
+          if (
+            Number.isNaN(
+              date.getTime()
+            )
+          ) {
+            return "-";
+          }
+
+          return (
+            new Intl.DateTimeFormat(
+              "id-ID",
+              {
+                dateStyle:
+                  "medium",
+
+                timeStyle:
+                  "short"
+              }
+            ).format(date)
+          );
+        },
+
+
+        csvDate(value) {
+          const date =
+            new Date(value);
+
+          if (
+            Number.isNaN(
+              date.getTime()
+            )
+          ) {
+            return "";
+          }
+
+          return (
+            new Intl.DateTimeFormat(
+              "id-ID",
+              {
+                day:
+                  "2-digit",
+
+                month:
+                  "2-digit",
+
+                year:
+                  "numeric"
+              }
+            ).format(date)
+          );
+        },
+
+
+        csvTime(value) {
+          const date =
+            new Date(value);
+
+          if (
+            Number.isNaN(
+              date.getTime()
+            )
+          ) {
+            return "";
+          }
+
+          return (
+            new Intl.DateTimeFormat(
+              "id-ID",
+              {
+                hour:
+                  "2-digit",
+
+                minute:
+                  "2-digit",
+
+                second:
+                  "2-digit"
+              }
+            ).format(date)
+          );
+        },
+
+
+        fileDate(value) {
+          const date =
+            new Date(value);
+
+          if (
+            Number.isNaN(
+              date.getTime()
+            )
+          ) {
+            return "data";
+          }
+
+          return (
+            date.getFullYear() +
+            "-" +
+            String(
+              date.getMonth() + 1
+            ).padStart(
+              2,
+              "0"
+            ) +
+            "-" +
+            String(
+              date.getDate()
+            ).padStart(
+              2,
+              "0"
+            )
+          );
+        },
+
+
+        escape(value) {
+          return String(
+            value ?? ""
+          ).replace(
+            /[&<>"']/g,
+            character => {
+              const map = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+              };
+
+              return map[
+                character
+              ];
+            }
+          );
+        }
+      },
+
+
+      Events: {
+        bind() {
+          document
+            .getElementById(
+              "btnSingle"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.UI.setMode(
+                  "single"
+                );
+              }
+            );
+
+          document
+            .getElementById(
+              "btnDouble"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.UI.setMode(
+                  "double"
+                );
+              }
+            );
+
+          document
+            .getElementById(
+              "btnCompactView"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.UI
+                  .setLeaderboardView(
+                    "compact"
+                  );
+              }
+            );
+
+          document
+            .getElementById(
+              "btnDetailView"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.UI
+                  .setLeaderboardView(
+                    "detail"
+                  );
+              }
+            );
+
+          document
+            .getElementById(
+              "btnSaveMatch"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.Engine
+                  .recordMatch();
+              }
+            );
+
+          document
+            .getElementById(
+              "btnOpenPlayerModal"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.UI
+                  .openPlayerModal();
+              }
+            );
+
+          document
+            .getElementById(
+              "btnSavePlayer"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.Engine
+                  .addPlayer();
+              }
+            );
+
+          document
+            .getElementById(
+              "btnCancelPlayer"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.UI
+                  .closePlayerModal();
+              }
+            );
+
+          document
+            .getElementById(
+              "btnClosePlayerModal"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.UI
+                  .closePlayerModal();
+              }
+            );
+
+          document
+            .getElementById(
+              "btnCloseDetail"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.UI.closeDetail();
+              }
+            );
+
+          document
+            .getElementById(
+              "btnExportStandings"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.Export
+                  .standings();
+              }
+            );
+
+          document
+            .getElementById(
+              "btnExportHistory"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.Export.history();
+              }
+            );
+
+          document
+            .getElementById(
+              "btnClearHistory"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.Engine
+                  .clearHistory();
+              }
+            );
+
+          document
+            .getElementById(
+              "btnReset"
+            )
+            .addEventListener(
+              "click",
+              () => {
+                APP.Engine.resetAll();
+              }
+            );
+
+          document
+            .getElementById(
+              "newPlayerInput"
+            )
+            .addEventListener(
+              "keydown",
+              event => {
+                if (
+                  event.key ===
+                  "Enter"
+                ) {
+                  APP.Engine
+                    .addPlayer();
+                }
+              }
+            );
+
+          document
+            .getElementById(
+              "leaderboardContainer"
+            )
+            .addEventListener(
+              "click",
+              event => {
+                const element =
+                  event.target.closest(
+                    "[data-player-id]"
+                  );
+
+                if (!element) {
+                  return;
+                }
+
+                APP.UI
+                  .showPlayerDetail(
+                    element.dataset
+                      .playerId
+                  );
+              }
+            );
+
+          document
+            .getElementById(
+              "playerModal"
+            )
+            .addEventListener(
+              "click",
+              event => {
+                if (
+                  event.target.id ===
+                  "playerModal"
+                ) {
+                  APP.UI
+                    .closePlayerModal();
+                }
+              }
+            );
+
+          document
+            .getElementById(
+              "detailModal"
+            )
+            .addEventListener(
+              "click",
+              event => {
+                if (
+                  event.target.id ===
+                  "detailModal"
+                ) {
+                  APP.UI
+                    .closeDetail();
+                }
+              }
+            );
+
+          document.addEventListener(
+            "keydown",
+            event => {
+              if (
+                event.key !==
+                "Escape"
+              ) {
+                return;
+              }
+
+              const detailModal =
+                document.getElementById(
+                  "detailModal"
+                );
+
+              const playerModal =
+                document.getElementById(
+                  "playerModal"
+                );
+
+              if (
+                !detailModal
+                  .classList
+                  .contains(
+                    "hidden"
+                  )
+              ) {
+                APP.UI.closeDetail();
+              } else if (
+                !playerModal
+                  .classList
+                  .contains(
+                    "hidden"
+                  )
+              ) {
+                APP.UI
+                  .closePlayerModal();
+              }
+            }
+          );
+        }
+      },
+
+
+      init() {
+        APP.Store.load();
+        APP.Events.bind();
+        APP.UI.render();
+        APP.UI.renderLibraryStatus();
+      }
+    };
+
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      () => {
+        try {
+          APP.init();
+        } catch (error) {
+          console.error(
+            "Aplikasi gagal dimuat:",
+            error
+          );
+
+          alert(
+            "Aplikasi gagal dimuat: " +
+            (
+              error.message ||
+              "kesalahan tidak diketahui"
+            )
+          );
+        }
+      }
+    );
+  </script>
+</body>
+</html>
